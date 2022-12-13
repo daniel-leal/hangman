@@ -1,0 +1,33 @@
+<h1 style="text-align: center">Hangman Game</h1>
+
+<div class="row">
+  <div class="column">
+    <h3 style="text-align: center">Animal or Fruit</h3>
+    <.live_component
+      module={HangmanWeb.GameLive.GallowComponent}
+      id="gallow"
+      errors={@errors} />
+
+    <h1 style="text-align: center">
+      <%= @hits %>
+    </h1>
+  </div>
+
+  <div class="column">
+    <blockquote>
+      <p><em>Choose one letter until discover the word. You have 6 attempts</em></p>
+    </blockquote>
+
+    <%= for n <- @alphabet do %>
+      <%= if Enum.member?(Rules.used_words(@hits, @errors), n) do %>
+        <button class="button button-small button-black" disabled><%= n %></button>
+      <% else %>
+        <button class="button button-small button-black" phx-click="check" phx-value-letter={n}><%= n %></button>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<%= if @end_game do %>
+  <button phx-click="new_game">Novo Jogo</button>
+<% end %>

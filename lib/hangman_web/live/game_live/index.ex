@@ -50,7 +50,7 @@ defmodule HangmanWeb.GameLive.Index do
           :noreply,
           socket
           |> assign(:end_game, true)
-          |> put_flash(:info, "Você venceu!")
+          |> put_flash(:info, "You Win!")
         }
 
       Rules.game_over?(errors) ->
@@ -58,7 +58,7 @@ defmodule HangmanWeb.GameLive.Index do
           :noreply,
           socket
           |> assign(:end_game, true)
-          |> put_flash(:error, "Você perdeu!\nA palavra era: #{chosen_word}")
+          |> put_flash(:error, "You Loose!\nWord: #{chosen_word}")
         }
 
       true ->

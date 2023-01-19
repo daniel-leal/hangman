@@ -19,7 +19,7 @@
     </blockquote>
 
     <%= for n <- @alphabet do %>
-      <%= if Enum.member?(Game.used_words(@hits, @errors), n) do %>
+      <%= if Enum.member?(Game.guesses(@hits, @errors), n) do %>
         <button class="button button-small button-black" disabled><%= n %></button>
       <% else %>
         <button class="button button-small button-black" phx-click="check" phx-value-letter={n}><%= n %></button>

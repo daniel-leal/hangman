@@ -18,7 +18,7 @@ defmodule Hangman.Game do
   end
 
   # LiveView
-  def used_words(hits, errors) do
+  def guesses(hits, errors) do
     Enum.map(hits, fn l -> String.trim(l) end) ++ errors
   end
 

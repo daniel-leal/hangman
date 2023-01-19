@@ -4,7 +4,7 @@ defmodule Hangman.RulesTest do
   test "define_word/0" do
     words = ["grape", "lion", "tiger", "orange", "apple", "banana", "cat"]
 
-    word = Hangman.Rules.define_word()
+    word = Hangman.Game.define_word()
 
     assert word in words
   end
@@ -13,7 +13,7 @@ defmodule Hangman.RulesTest do
     letter = "a"
     word = "banana"
 
-    position = Hangman.Rules.check_letter_position(word, letter)
+    position = Hangman.Game.check_letter_position(word, letter)
 
     assert position == [1, 3, 5]
   end
@@ -22,16 +22,16 @@ defmodule Hangman.RulesTest do
     letter = "x"
     word = "banana"
 
-    position = Hangman.Rules.check_letter_position(word, letter)
+    position = Hangman.Game.check_letter_position(word, letter)
 
     assert position == []
   end
 
-  test "replace_hits/3" do
+  test "replace_correct_guesses/3" do
     indexes = [1, 3, 5]
     hits = ["_ ", "_ ", "_ ", "_ ", "_ ", "_ "]
 
-    hits = Hangman.Rules.replace_hits(hits, indexes, "a")
+    hits = Hangman.Game.replace_correct_guesses(hits, indexes, "a")
     expected_hits = ["_ ", "a ", "_ ", "a ", "_ ", "a "]
 
     assert hits == expected_hits
@@ -40,11 +40,11 @@ defmodule Hangman.RulesTest do
   test "victory?/2" do
     word = "banana"
     hits = ["b ", "a ", "n ", "a ", "n ", "a "]
-    assert Hangman.Rules.victory?(word, hits)
+    assert Hangman.Game.victory?(word, hits)
   end
 
   test "game_over?/3" do
     attempts = ["l", "x", "g", "h", "i", "j"]
-    assert Hangman.Rules.game_over?(attempts)
+    assert Hangman.Game.game_over?(attempts)
   end
 end

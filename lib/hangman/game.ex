@@ -1,50 +1,61 @@
 defmodule Hangman.Game do
-  alias Hangman.Rules
+  @max_attempts 6
+  @words ["grape", "lion", "tiger", "orange", "apple", "banana", "cat"]
 
-  def handle_game(chosen_word, hits, errors) do
-    cond do
-      Rules.victory?(chosen_word, hits) ->
-        IO.puts("Você venceu!!!")
-        IO.puts(chosen_word)
+  def define_word do
+    @words
+    |> Enum.take_random(1)
+    |> to_string()
+  end
 
-      Rules.game_over?(errors) ->
-        IO.puts("Você Perdeu!!!")
-        IO.puts(chosen_word)
+  def init_underscores(chosen_word) do
+    Enum.map(1..String.length(chosen_word), fn _ -> "_ " end)
+  end
 
-      true ->
-        continue(chosen_word, hits, errors)
+  # LiveView
+  def init_alphabet do
+    for n <- ?a..?z, do: <<n::utf8>>
+  end
+
+  # LiveView
+  def used_words(hits, errors) do
+    Enum.map(hits, fn l -> String.trim(l) end) ++ errors
+  end
+
+  defp letter_exists?(word, letter), do: String.contains?(word, letter)
+
+  def check_letter_position(word, letter) do
+    if letter_exists?(word, letter) do
+      word
+      |> String.codepoints()
+      |> Enum.with_index()
+      |> Enum.map(fn {lt, i} ->
+        if lt == letter do
+          i
+        end
+      end)
+      |> Enum.reject(&is_nil/1)
+    else
+      []
     end
   end
 
-  def validate(chosen_word, hits, errors) do
-    letter =
-      IO.gets("Digite uma letra: ")
-      |> String.trim()
-      |> String.downcase()
-
-    case Rules.check_letter_position(chosen_word, letter) do
-      [] ->
-        IO.puts("Errou")
-        handle_game(chosen_word, hits, errors ++ [letter])
-
-      idx ->
-        IO.puts("Acertou")
-        hits = Rules.replace_hits(hits, idx, letter)
-        handle_game(chosen_word, hits, errors)
-    end
+  def replace_correct_guesses(hits, indexes, letter) do
+    hits
+    |> Enum.with_index()
+    |> Enum.map(fn
+      {value, index} -> if index in indexes, do: "#{letter} ", else: value
+    end)
   end
 
-  def start do
-    chosen_word = Rules.define_word()
-    hits = Rules.init_hits(chosen_word)
-    validate(chosen_word, hits, [])
+  def victory?(chosen_word, hits) do
+    word =
+      hits
+      |> Enum.join()
+      |> String.replace(" ", "")
+
+    chosen_word == word
   end
 
-  def continue(word, hits, errors) do
-    IO.puts(hits)
-    IO.puts("Número de tentativas erradas: #{Enum.count(errors)}")
-    IO.puts("Tentativas erradas: #{errors}")
-
-    validate(word, hits, errors)
-  end
+  def game_over?(attempts), do: Enum.count(attempts) == @max_attempts
 end

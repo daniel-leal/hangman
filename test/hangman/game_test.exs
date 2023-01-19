@@ -1,4 +1,4 @@
-defmodule Hangman.RulesTest do
+defmodule Hangman.GameTest do
   use ExUnit.Case
 
   test "define_word/0" do
